@@ -1,0 +1,140 @@
+.container {
+  color: palevioletred;
+  font-family: monospace;
+}
+.backGround {
+  background-image: linear-gradient(to bottom, #2c061f, #374045, #7d0633);
+}
+.row-5 {
+  font-size: 56px;
+  margin: 0;
+}
+.row {
+  margin: 0;
+}
+.form-control {
+  background-color: transparent;
+  border: 0.01em dotted palevioletred;
+  position: relative;
+  top: 0.4em;
+  left: 0.8em;
+  display: inline;
+  max-width: 200px;
+  margin-right: 10px;
+}
+.celcius-big,
+.searchButton,
+.searchCurrent {
+  color: palevioletred;
+  font-size: 25px;
+  padding: 6px;
+  border: none;
+  width: 50px;
+  font-weight: 500;
+}
+.searchCurrent {
+  position: relative;
+  right: 1em;
+}
+.farenheitConversion {
+  position: relative;
+  top: 0.3em;
+  right: 0.3em;
+  color: palevioletred;
+  font-size: 25px;
+  padding: 6px;
+  border: none;
+  width: 56px;
+  font-weight: 500;
+}
+.dropdown-menu {
+  min-width: 7rem;
+  background-color: transparent;
+  border: none;
+}
+.dropdown-item {
+  font-size: 14px;
+  color: palevioletred;
+}
+.dropdown-item:hover {
+  background-color: peachpuff;
+  color: brown;
+  border-radius: 20px;
+}
+.rowPlace {
+  font-size: 34px;
+  font-weight: bolder;
+  padding-top: 10px;
+  position: relative;
+  left: 0.6em;
+}
+.rowDate,
+.rowInfo {
+  padding-bottom: 0;
+  font-size: 15px;
+}
+.rowDesc,
+.rowMaxMin {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.rowFutureDay,
+.rowFutureWeather {
+  font-weight: 600;
+}
+.rowFutureDate {
+  font-size: 14px;
+}
+
+.rowFutureIcon {
+  font-size: 22px;
+}
+.chart {
+  background-color: transparent;
+}
+
+#dropDown {
+  position: relative;
+  right: 2em;
+}
+
+#heart1 {
+  font-size: 30px;
+  color: palevioletred;
+  position: relative;
+  top: 2px;
+}
+
+#heart2 {
+  font-size: 20px;
+  position: relative;
+  bottom: 0.8em;
+}
+a {
+  text-decoration: none;
+  color: black;
+}
+btn {
+  padding: 0;
+}
+
+.farenheitConversion:hover {
+  color: chartreuse;
+}
+.searchButton:hover,
+.searchCurrent:hover,
+#dropDown:hover {
+  background-color: rgb(255, 192, 203, 0.5);
+}
+.celcius-big {
+  position: relative;
+  top: 0.3em;
+}
+
+.number,
+.celcius,
+.humidity {
+  padding: 0;
+  width: fit-content;
+}

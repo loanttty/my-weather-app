@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+	<script src="https://kit.fontawesome.com/a1b5c6dd27.js" crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+	<link rel="stylesheet" href="src/style.css" />
+	<title>Weather App</title>
+</head>
+<body>
+    <div class="container px-4">
+        <div class="card backGround" style = "width: 30rem;margin-top: 20px;">
+            <div class="card-body">
+                <div class="row rowSearch">
+									<div class="col-8">
+										<form>
+											<input type="text" 
+											class="form-control"
+											id="enterCity"
+											placeholder="Enter city">
+											<button type="submit" class="btn searchButton">
+												<i class="fas fa-search-location"></i>
+											</button>
+										</form>
+									</div>
+									<div class="col-2">
+										<button class="btn searchCurrent">
+											<i class="fas fa-map-marker-alt"></i>
+										</button>
+									</div>
+									<div class="col-2" style="padding-left:0;">
+											<div class="dropdown" style="display:inline;">
+												<a class="btn" role="button" href="#" id="dropDown" data-bs-toggle="dropdown" aria-expanded="false">
+													<i id="heart1" class="fas fa-heart"></i>
+												</a>
+												<ul class="dropdown-menu" aria-labelledby="dropdownFavourites">
+													<li>
+														<a href="#" class="dropdown-item">Singapore</a>
+													</li>
+													<li>
+														<a href="#" class="dropdown-item">Saigon</a>
+													</li>
+													<li>
+														<a href="#" class="dropdown-item">Paris</a>
+													</li>
+												</ul>
+											</div>
+									</div>
+								</div>
+								<div class="row rowPlace justify-content-center">
+									<span class="city" style="width:fit-content; padding: 0">Singapore</span>
+									<span style="width:fit-content;">
+										<i id="heart2" type="button" class="far fa-heart"></i>
+									</span>
+								</div>
+								<div class="row rowDate justify-content-center"></div>
+								<div class="row rowInfo row-cols-2 justify-content-center">
+									Real Feel
+									<span class="number realFeel" style="padding-left: 5px;"></span>
+									<span class="celcius" style="padding-right: 5px;">°C</span> | Humidity: 
+									<span class="humidity" style="padding-left: 5px;"></span>
+									%
+								</div>
+								<div class="row row-5 justify-content-center">
+									<span class="icon-big" style="width: fit-content;padding:0"></span>
+									<span class="number-big" style="width: fit-content;padding:0"></span>
+									<span class="celcius-big" style="width: fit-content;padding-left: 0;">°C</span>
+									<a type="button" class="farenheitConversion">|°F</a>
+									
+								</div>
+								<div class="row rowDesc justify-content-center"></div>
+								<div class="row rowMaxMin justify-content-center">
+									<span class="number currentMax"></span>
+									<span class="celcius">°C</span>
+									/
+									<span class="number currentMin"></span>
+									<span class="celcius">°C</span>
+								</div>
+								<div class="card chart" style="width:fit-content;margin: 0 auto;border: none;">
+									<div class="card-body">
+										<canvas id="myChart" width="400" height="150"></canvas>
+									</div>
+								</div>
+								<div class="row row-cols-5">
+									<div class="col">
+										<div class="row rowFutureDay justify-content-center"></div>
+										<div class="row rowFutureDate justify-content-center"></div>
+										<div class="row rowFutureIcon justify-content-center"></div>
+										<div class="row rowFutureWeather justify-content-center">
+											<span class="number forecast"></span>
+											<span class="celcius">°C</span>
+										</div>
+									</div>
+									<div class="col">
+										<div class="row rowFutureDay justify-content-center"></div>
+										<div class="row rowFutureDate justify-content-center"></div>
+										<div class="row rowFutureIcon justify-content-center"></div>
+										<div class="row rowFutureWeather justify-content-center">
+											<span class="number forecast"></span>
+											<span class="celcius">°C</span>
+										</div>
+										</div>
+									<div class="col">
+										<div class="row rowFutureDay justify-content-center"></div>
+										<div class="row rowFutureDate justify-content-center"></div>
+										<div class="row rowFutureIcon justify-content-center"></div>
+										<div class="row rowFutureWeather justify-content-center">
+											<span class="number forecast"></span>
+											<span class="celcius">°C</span>
+										</div>
+									</div>
+									<div class="col">
+										<div class="row rowFutureDay justify-content-center"></div>
+										<div class="row rowFutureDate justify-content-center"></div>
+										<div class="row rowFutureIcon justify-content-center"></div>
+										<div class="row rowFutureWeather justify-content-center">
+											<span class="number forecast"></span>
+											<span class="celcius">°C</span>
+										</div>
+									</div>
+									<div class="col">
+										<div class="row rowFutureDay justify-content-center"></div>
+										<div class="row rowFutureDate justify-content-center"></div>
+										<div class="row rowFutureIcon justify-content-center"></div>
+										<div class="row rowFutureWeather justify-content-center">
+											<span class="number forecast"></span>
+											<span class="celcius">°C</span>
+										</div>
+									</div>
+								</div>
+            </div>
+        </div>
+		</div>
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
+		<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+		<script src="src/js.js"></script>
+	
+</body>
+</html>
