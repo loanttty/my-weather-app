@@ -239,12 +239,9 @@ function checkMarkedCity (cityName) {
 			var existingCity = array[i];
 		}
 	}	
-	
-	if (existingCity === undefined) {
-		changeHeart2Icon('fas','far')
-	} else {
-		changeHeart2Icon('far','fas')
-	};
+
+	return existingCity; /** check if city input exists in drop-down list */
+
 }
 
 function search(event) {
@@ -255,7 +252,13 @@ function search(event) {
 	if (searchInput.value) {
 		city.innerHTML = `${searchInput.value}`;
 		getCurrentWeather(searchInput.value);
-		checkMarkedCity(searchInput.value);
+		console.log(checkMarkedCity(searchInput.value));
+
+		if (checkMarkedCity(searchInput.value) === undefined) {
+			changeHeart2Icon('fas','far')
+		} else {
+			changeHeart2Icon('far','fas')
+		};
 		
 	} else {
 		alert(`Please enter a city`);
@@ -294,9 +297,7 @@ clickFavorite.addEventListener("click",
         if (icon.classList.contains('far')) {
 			icon.classList.remove('far');
             icon.classList.add('fas');
-			//todo: still have to check for duplication in existling list before append
 			menu.appendChild(createNewFavCity(markedCity.innerHTML));
-			
 			selectDropDownItem(); //*search weather of newly marked city  */
 
         } else {
@@ -330,4 +331,5 @@ searchCurrent.addEventListener("click", displayCurrentCity);
 
 /**
  * todo: transmit data to chart
+ * todo: autocomplete for input field
  */
