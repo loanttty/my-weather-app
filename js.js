@@ -7,27 +7,6 @@ function createNewFavCity (chosenCity) {
 	return li;
 }
 
-var clickFavorite = document.querySelector(".rowPlace");
-clickFavorite.addEventListener("click", 
-    function () {
-        const icon =this.querySelector('i');
-		var markedCity = this.querySelector(".city");
-		console.log(markedCity);
-		const menu = document.querySelector(".dropdown-menu");
-        if (icon.classList.contains('far')) {
-			icon.classList.remove('far');
-            icon.classList.add('fas');
-			//todo: still have to check for duplication in existling list before append
-			//* the newly appended item is not stored, disappear with every page refreshing*/
-			//* which leads to thefailure of appending fave city to title */
-			menu.appendChild(createNewFavCity(markedCity.innerHTML));
-        } else {
-			icon.classList.remove('fas');
-            icon.classList.add('far');
-			//todo: when a city is unmarked, it should be removed from the list
-        }
-    });
-
 function convertDegree (where,indicator) {
 	var degree, i;
 	degree = document.querySelectorAll(where);
@@ -221,7 +200,6 @@ function getCurrentWeather (place) {
 		 ** to prevent the old data to reappear when mouse is hovered on data points
 		 */
 		myChart.destroy();
-		console.log(myChart);
 	}
 	myChart = new Chart(ctx,config);
 	let forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${place}&appid=${key}&&units=metric`;
@@ -238,6 +216,14 @@ function getCurrentWeather (place) {
 }
 getCurrentWeather("Singapore");
 
+function changeHeart2Icon (removedIcon,addedIcon) {
+	const icon =document.querySelector('#heart2');
+	if (icon.classList.contains(removedIcon)) {
+		icon.classList.remove(removedIcon);
+		icon.classList.add(addedIcon);
+	}
+}
+
 function search(event) {
 	event.preventDefault();
 	let searchInput = document.querySelector("#enterCity");
@@ -246,6 +232,25 @@ function search(event) {
 	if (searchInput.value) {
 		city.innerHTML = `${searchInput.value}`;
 		getCurrentWeather(searchInput.value);
+		
+		let dropDownItemList = document.querySelectorAll(".dropdown-item");
+		var faveCityList = Array.from(dropDownItemList);
+		var i; array = [];
+		for (i = 0; i < faveCityList.length; i++) {
+			array.push(faveCityList[i].innerHTML);
+		}
+		
+		for (i = 0; i < array.length; i++) {
+			if (searchInput.value === array[i]) {
+				var existingCity = array[i];
+			}
+		}	
+
+		if (existingCity === undefined) {
+			changeHeart2Icon('fas','far')
+		} else {
+			changeHeart2Icon('far','fas')
+		};
 	} else {
 		alert(`Please enter a city`);
 	}
@@ -258,15 +263,41 @@ function appendLikedCity (cityName) {
 	//event.preventDefault();
 	let city = document.querySelector(".city");
 	city.innerHTML = `${cityName}`;
+	changeHeart2Icon('far','fas');
 }
 
-let clickDropDownItem = document.querySelectorAll(".dropdown-item");
-clickDropDownItem.forEach(function (clickItem) {
-	clickItem.addEventListener("click", () => {
-		appendLikedCity(clickItem.innerHTML);
-		getCurrentWeather(clickItem.innerHTML);
+function selectDropDownItem() {
+	let clickDropDownItem = document.querySelectorAll(".dropdown-item");
+	clickDropDownItem.forEach(function (clickItem) {
+		clickItem.addEventListener("click", () => {
+			appendLikedCity(clickItem.innerHTML);
+			getCurrentWeather(clickItem.innerHTML);
+		});
 	});
-});
+}
+
+selectDropDownItem();
+
+var clickFavorite = document.querySelector(".rowPlace");
+clickFavorite.addEventListener("click", 
+    function () {
+        const icon =this.querySelector('i');
+		var markedCity = this.querySelector(".city");
+		const menu = document.querySelector(".dropdown-menu");
+        if (icon.classList.contains('far')) {
+			icon.classList.remove('far');
+            icon.classList.add('fas');
+			//todo: still have to check for duplication in existling list before append
+			menu.appendChild(createNewFavCity(markedCity.innerHTML));
+			
+			selectDropDownItem(); //*search weather of newly marked city  */
+
+        } else {
+			icon.classList.remove('fas');
+            icon.classList.add('far');
+			//todo: when a city is unmarked, it should be removed from the list
+        }
+    });
 
 function displayCurrentCity() {
 	navigator.geolocation.getCurrentPosition((response) => {
@@ -285,8 +316,5 @@ searchCurrent.addEventListener("click", displayCurrentCity);
 
 
 /**
- * *DONE todo: enter city name in Search Engine or click fave-marked cities, display current info, even date and time
- * *DONE todo: add button 'current location', display current location info
  * todo: transmit data to chart
- * ?todo: DONE BUT NEED TO TIDY UP transmit forecasted data to 5-day-forecast part
  */
