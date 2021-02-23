@@ -3,6 +3,8 @@ function createNewFavCity (chosenCity) {
 	var a = document.createElement("a");
 	a.textContent = chosenCity;
 	a.className = 'dropdown-item';
+	chosenCity = chosenCity.replace(" ","-"); /**cater for city name with 2 or more words */
+	li.className = chosenCity;
 	li.appendChild(a);
 	return li;
 }
@@ -224,6 +226,27 @@ function changeHeart2Icon (removedIcon,addedIcon) {
 	}
 }
 
+function checkMarkedCity (cityName) {
+	let dropDownItemList = document.querySelectorAll(".dropdown-item");
+	var faveCityList = Array.from(dropDownItemList);
+	var i; array = [];
+	for (i = 0; i < faveCityList.length; i++) {
+		array.push(faveCityList[i].innerHTML);
+	}
+	
+	for (i = 0; i < array.length; i++) {
+		if (cityName === array[i]) {
+			var existingCity = array[i];
+		}
+	}	
+	
+	if (existingCity === undefined) {
+		changeHeart2Icon('fas','far')
+	} else {
+		changeHeart2Icon('far','fas')
+	};
+}
+
 function search(event) {
 	event.preventDefault();
 	let searchInput = document.querySelector("#enterCity");
@@ -232,25 +255,8 @@ function search(event) {
 	if (searchInput.value) {
 		city.innerHTML = `${searchInput.value}`;
 		getCurrentWeather(searchInput.value);
+		checkMarkedCity(searchInput.value);
 		
-		let dropDownItemList = document.querySelectorAll(".dropdown-item");
-		var faveCityList = Array.from(dropDownItemList);
-		var i; array = [];
-		for (i = 0; i < faveCityList.length; i++) {
-			array.push(faveCityList[i].innerHTML);
-		}
-		
-		for (i = 0; i < array.length; i++) {
-			if (searchInput.value === array[i]) {
-				var existingCity = array[i];
-			}
-		}	
-
-		if (existingCity === undefined) {
-			changeHeart2Icon('fas','far')
-		} else {
-			changeHeart2Icon('far','fas')
-		};
 	} else {
 		alert(`Please enter a city`);
 	}
@@ -284,6 +290,7 @@ clickFavorite.addEventListener("click",
         const icon =this.querySelector('i');
 		var markedCity = this.querySelector(".city");
 		const menu = document.querySelector(".dropdown-menu");
+		console.log(menu);
         if (icon.classList.contains('far')) {
 			icon.classList.remove('far');
             icon.classList.add('fas');
@@ -295,7 +302,11 @@ clickFavorite.addEventListener("click",
         } else {
 			icon.classList.remove('fas');
             icon.classList.add('far');
-			//todo: when a city is unmarked, it should be removed from the list
+			//* when a city is unmarked, it should be removed from the list */
+			var test = markedCity.innerHTML;
+			test = test.replace(" ","-"); /**cater for city name with 2 or more words */
+			test = `.${test}`;
+			menu.removeChild(menu.querySelector(test));
         }
     });
 
@@ -306,8 +317,10 @@ function displayCurrentCity() {
 		let key = "e799217a4276d0646d61cfe92b79802b";
 		let url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${key}&units=metric`;
 		axios.get(url).then((response) => {
-			appendLikedCity(response.data.name);
+			let city = document.querySelector(".city");
+			city.innerHTML = `${response.data.name}`;
 			getCurrentWeather(response.data.name);
+			checkMarkedCity(response.data.name);
 		})
 	})
 }
