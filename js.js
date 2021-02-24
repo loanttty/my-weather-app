@@ -29,14 +29,14 @@ function changeValue (where,toBeValue) {
 };
 var clickFarenheit = document.querySelector('.farenheitConversion');
 clickFarenheit.addEventListener("click", function () {
-	if (this.innerHTML === '|°F') {
-		this.innerHTML=this.innerHTML.replace("|°F","|°C");
+	if (this.innerHTML === '°F') {
+		this.innerHTML=this.innerHTML.replace("°F","°C");
 		changeValue(".celcius","°F");
 		changeValue(".celcius-big","°F");
 		convertDegree(".number","°F");
 		convertDegree(".number-big","°F");
 	} else {
-		this.innerHTML=this.innerHTML.replace("|°C","|°F");
+		this.innerHTML=this.innerHTML.replace("°C","°F");
 		changeValue(".celcius","°C");
 		changeValue(".celcius-big","°C");
 		convertDegree(".number","°C");
@@ -250,11 +250,19 @@ function search(event) {
 	let city = document.querySelector(".city");
 	
 	if (searchInput.value) {
-		city.innerHTML = `${searchInput.value}`;
-		getCurrentWeather(searchInput.value);
-		console.log(checkMarkedCity(searchInput.value));
+		var formattedCity = searchInput.value.trim().split(" ");
+		var i; 
+		for (i = 0; i < formattedCity.length; i++) {
+			var b = formattedCity[i];
+			b = b[0].toUpperCase() + b.substring(1);
+			formattedCity[i] = b;
+		}
+		formattedCity = formattedCity.join(" ");
 
-		if (checkMarkedCity(searchInput.value) === undefined) {
+		city.innerHTML = `${formattedCity}`;
+		getCurrentWeather(formattedCity);
+
+		if (checkMarkedCity(formattedCity) === undefined) {
 			changeHeart2Icon('fas','far')
 		} else {
 			changeHeart2Icon('far','fas')
@@ -290,10 +298,9 @@ selectDropDownItem();
 var clickFavorite = document.querySelector(".rowPlace");
 clickFavorite.addEventListener("click", 
     function () {
-        const icon =this.querySelector('i');
 		var markedCity = this.querySelector(".city");
+        const icon =this.querySelector('i');
 		const menu = document.querySelector(".dropdown-menu");
-		console.log(menu);
         if (icon.classList.contains('far')) {
 			icon.classList.remove('far');
             icon.classList.add('fas');
