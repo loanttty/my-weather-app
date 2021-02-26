@@ -47,7 +47,7 @@ clickFarenheit.addEventListener("click", function () {
 
 function format_two_digits (n,b) {
 	/**
-	 * *b is indicator, 1: format for month, 0: format for minutes or hours
+	 * *b is indicator, 1: format for month, 0: format for minutes or hours or date
 	 */
 	return (n+b) < 10 ? '0' + (n+b) : (n+b);
 }
@@ -82,7 +82,7 @@ function time (newDate) {
 	for(i = 0; i<dateFuture.length; i++) {
 		var dateTest = new Date(year, newDate.getMonth(), date);
 		dateTest.setDate(date + i + 1);
-		dateFuture[i].innerHTML = `${dateTest.getDate()}/${format_two_digits(dateTest.getMonth(),1)}`;
+		dateFuture[i].innerHTML = `${format_two_digits(dateTest.getDate(),0)}/${format_two_digits(dateTest.getMonth(),1)}`;
 	};
 };
 
@@ -99,7 +99,7 @@ var ctx = document.getElementById('myChart');
 var config = {
 	type: 'line',
 	data: {
-		labels: ['06:00', '09:00', '12:00', '15:00', '18:00', '21:00', '00:00', '03:00'],
+		labels: ['09:00', '12:00', '15:00', '18:00', '21:00', '00:00', '03:00','06:00'],
 		datasets: [{
 			label: 'Day Temperature',
 			data: [],
@@ -206,17 +206,17 @@ function getCurrentWeather (place) {
 	myChart = new Chart(ctx,config);
 	let forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${place}&appid=${key}&&units=metric`;
 	axios.get(forecastUrl).then((response) => {
+		console.log(response);
 		var i;
-		myChart.data.datasets.forEach((test) => {
-			test.data.length = 0;
-			for (i = 0; i < 8; i++) {
-				test.data.push(Math.round(response.data.list[i].main.temp));
-			}
-		})
+		config.data.datasets[0].data.splice(0, config.data.datasets[0].data.length);
+		for (i = 0; i < 8; i++) {
+			config.data.datasets[0].data.push(Math.round(response.data.list[i].main.temp));
+		}
+		console.log(config);
+		myChart.update();
 	});
-	myChart.update();
 }
-getCurrentWeather("Singapore");
+getCurrentWeather("New York");
 
 function changeHeart2Icon (removedIcon,addedIcon) {
 	const icon =document.querySelector('#heart2');
@@ -328,7 +328,12 @@ function displayCurrentCity() {
 			let city = document.querySelector(".city");
 			city.innerHTML = `${response.data.name}`;
 			getCurrentWeather(response.data.name);
-			checkMarkedCity(response.data.name);
+
+			if (checkMarkedCity(response.data.name) === undefined) {
+			changeHeart2Icon('fas','far')
+			} else {
+			changeHeart2Icon('far','fas')
+			};
 		})
 	})
 }
@@ -338,5 +343,5 @@ searchCurrent.addEventListener("click", displayCurrentCity);
 
 /**
  * todo: transmit data to chart
- * todo: autocomplete for input field
  */
+
