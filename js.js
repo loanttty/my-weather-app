@@ -157,6 +157,7 @@ function getCurrentWeather (place) {
 	let key = "e799217a4276d0646d61cfe92b79802b";
 	let url = `https://api.openweathermap.org/data/2.5/weather?q=${place}&appid=${key}&&units=metric`;
 	axios.get(url).then((response) => {
+		console.log(response);
 		let realFeel = document.querySelector(".realFeel");
 		realFeel.innerHTML = Math.round(response.data.main.feels_like);
 		let humidity = document.querySelector(".humidity");
@@ -206,13 +207,11 @@ function getCurrentWeather (place) {
 	myChart = new Chart(ctx,config);
 	let forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${place}&appid=${key}&&units=metric`;
 	axios.get(forecastUrl).then((response) => {
-		console.log(response);
 		var i;
 		config.data.datasets[0].data.splice(0, config.data.datasets[0].data.length);
 		for (i = 0; i < 8; i++) {
 			config.data.datasets[0].data.push(Math.round(response.data.list[i].main.temp));
 		}
-		console.log(config);
 		myChart.update();
 	});
 }
@@ -226,7 +225,7 @@ function changeHeart2Icon (removedIcon,addedIcon) {
 	}
 }
 
-function checkMarkedCity (cityName) {
+function checkDupplicatedMarkedCity (cityName) {
 	let dropDownItemList = document.querySelectorAll(".dropdown-item");
 	var faveCityList = Array.from(dropDownItemList);
 	var i; array = [];
@@ -241,7 +240,6 @@ function checkMarkedCity (cityName) {
 	}	
 
 	return existingCity; /** check if city input exists in drop-down list */
-
 }
 
 function search(event) {
@@ -258,11 +256,11 @@ function search(event) {
 			formattedCity[i] = b;
 		}
 		formattedCity = formattedCity.join(" ");
-
 		city.innerHTML = `${formattedCity}`;
+
 		getCurrentWeather(formattedCity);
 
-		if (checkMarkedCity(formattedCity) === undefined) {
+		if (checkDupplicatedMarkedCity(formattedCity) === undefined) {
 			changeHeart2Icon('fas','far')
 		} else {
 			changeHeart2Icon('far','fas')
@@ -329,7 +327,7 @@ function displayCurrentCity() {
 			city.innerHTML = `${response.data.name}`;
 			getCurrentWeather(response.data.name);
 
-			if (checkMarkedCity(response.data.name) === undefined) {
+			if (checkDupplicatedMarkedCity(response.data.name) === undefined) {
 			changeHeart2Icon('fas','far')
 			} else {
 			changeHeart2Icon('far','fas')
