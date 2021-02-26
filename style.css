@@ -60,6 +60,7 @@
 .dropdown-item:hover {
   background-color: peachpuff;
   color: brown;
+  font-weight: bolder;
   border-radius: 20px;
 }
 .rowPlace {
@@ -121,7 +122,7 @@ btn {
 }
 
 .farenheitConversion:hover {
-  color: chartreuse;
+  color: #ffcbcb;
 }
 .searchButton:hover,
 .searchCurrent:hover,

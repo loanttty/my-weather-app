@@ -134,17 +134,20 @@ var config = {
 		scales: {
 			xAxes: [{
 				gridLines: {
-					display: false,
+					display: false
 				},
+				ticks: {
+					fontColor: 'palevioletred'
+				}
 			}],
 			yAxes: [{
 				gridLines: {
 					display: false,
-					drawBorder: false,
+					drawBorder: false
 				},
 				ticks: {
 					display: false,
-					max: 40,
+					max: 40
 				}
 			}],
 		}
