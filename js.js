@@ -160,10 +160,11 @@ function getCurrentWeather (place) {
 	let key = "e799217a4276d0646d61cfe92b79802b";
 	let url = `https://api.openweathermap.org/data/2.5/weather?q=${place}&appid=${key}&&units=metric`;
 	axios.get(url).then((response) => {
+		console.log(response);
 		let realFeel = document.querySelector(".realFeel");
 		realFeel.innerHTML = Math.round(response.data.main.feels_like);
-		let humidity = document.querySelector(".humidity");
-		humidity.innerHTML = Math.round(response.data.main.humidity);
+		let windSpeed = document.querySelector(".windSpeed");
+		windSpeed.innerHTML = Math.round(response.data.wind.speed);
 		let temp = document.querySelector(".number-big");
 		temp.innerHTML = Math.round(response.data.main.temp);
 		let bigIcon = document.querySelector(".icon-big");
