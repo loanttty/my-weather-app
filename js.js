@@ -99,7 +99,7 @@ var ctx = document.getElementById('myChart');
 var config = {
 	type: 'line',
 	data: {
-		labels: ['09:00', '12:00', '15:00', '18:00', '21:00', '00:00', '03:00','06:00'],
+		labels: [],
 		datasets: [{
 			label: 'Day Temperature',
 			data: [],
@@ -160,7 +160,6 @@ function getCurrentWeather (place) {
 	let key = "e799217a4276d0646d61cfe92b79802b";
 	let url = `https://api.openweathermap.org/data/2.5/weather?q=${place}&appid=${key}&&units=metric`;
 	axios.get(url).then((response) => {
-		console.log(response);
 		let realFeel = document.querySelector(".realFeel");
 		realFeel.innerHTML = Math.round(response.data.main.feels_like);
 		let humidity = document.querySelector(".humidity");
@@ -212,13 +211,15 @@ function getCurrentWeather (place) {
 	axios.get(forecastUrl).then((response) => {
 		var i;
 		config.data.datasets[0].data.splice(0, config.data.datasets[0].data.length);
+		config.data.labels.splice(0, config.data.labels.length);
 		for (i = 0; i < 8; i++) {
 			config.data.datasets[0].data.push(Math.round(response.data.list[i].main.temp));
+			config.data.labels.push(response.data.list[i].dt_txt.substring(11,16));
 		}
 		myChart.update();
 	});
 }
-getCurrentWeather("New York");
+getCurrentWeather("Tokyo");
 
 function changeHeart2Icon (removedIcon,addedIcon) {
 	const icon =document.querySelector('#heart2');
@@ -340,9 +341,3 @@ function displayCurrentCity() {
 }
 let searchCurrent = document.querySelector(".searchCurrent");
 searchCurrent.addEventListener("click", displayCurrentCity);
-
-
-/**
- * todo: transmit data to chart
- */
-
