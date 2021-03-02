@@ -160,7 +160,6 @@ function getCurrentWeather (place) {
 	let key = "e799217a4276d0646d61cfe92b79802b";
 	let url = `https://api.openweathermap.org/data/2.5/weather?q=${place}&appid=${key}&&units=metric`;
 	axios.get(url).then((response) => {
-		console.log(response);
 		let realFeel = document.querySelector(".realFeel");
 		realFeel.innerHTML = Math.round(response.data.main.feels_like);
 		let windSpeed = document.querySelector(".windSpeed");
@@ -180,7 +179,7 @@ function getCurrentWeather (place) {
 	);
 
 	function changeForecastedTemp (i,response) {
-		forecastedTemp[i].innerHTML = `${Math.round(response.data.list[6+c].main.temp)}`;
+		forecastedTemp[4-i].innerHTML = `${Math.round(response.data.list[39-c].main.temp)}`;
 		c = c+8;
 	}
 	let forecastedTemp = document.querySelectorAll(".forecast");
@@ -191,7 +190,7 @@ function getCurrentWeather (place) {
 	};
 	
 	function changeForecastedIcon (i,response) {
-		forecastedIcon[i].innerHTML = `<img src = "https://openweathermap.org/img/wn/${response.data.list[6+d].weather[0].icon}@2x.png">`;
+		forecastedIcon[4-i].innerHTML = `<img src = "https://openweathermap.org/img/wn/${response.data.list[39-d].weather[0].icon}@2x.png">`;
 		d = d+8;
 	}
 	let forecastedIcon = document.querySelectorAll(".rowFutureIcon");
