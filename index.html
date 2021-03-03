@@ -20,20 +20,30 @@
 											class="form-control"
 											id="enterCity"
 											placeholder="Enter city">
-											<button type="submit" class="btn searchButton">
+											<button type="submit" 
+											class="btn searchButton" 
+											data-bs-toggle="tooltip"
+											data-bs-placement="bottom"
+											title="Search">
 												<i class="fas fa-search-location"></i>
 											</button>
 										</form>
 									</div>
 									<div class="col-2">
-										<button class="btn searchCurrent">
+										<button class="btn searchCurrent"
+										data-bs-toggle="tooltip"
+										data-bs-placement="bottom"
+										title="Current location">
 											<i class="fas fa-map-marker-alt"></i>
 										</button>
 									</div>
 									<div class="col-2" style="padding-left:0;">
 											<div class="dropdown" style="display:inline;">
 												<a class="btn" role="button" href="#" id="dropDown" data-bs-toggle="dropdown" aria-expanded="false">
-													<i id="heart1" class="fas fa-heart"></i>
+													<i id="heart1" class="fas fa-heart"
+													data-bs-toggle="tooltip"
+													data-bs-placement="bottom"
+													title="Favorite Cities"></i>
 												</a>
 												<ul class="dropdown-menu" aria-labelledby="dropdownFavourites">
 													<li class = "Kosice">

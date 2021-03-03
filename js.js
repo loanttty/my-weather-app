@@ -341,3 +341,8 @@ function displayCurrentCity() {
 }
 let searchCurrent = document.querySelector(".searchCurrent");
 searchCurrent.addEventListener("click", displayCurrentCity);
+
+/**
+ * ? figures on top of chart points
+ * ? push hourly forecast according to local timezone of serached place
+ */
