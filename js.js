@@ -127,9 +127,11 @@ var config = {
 	
 var myChart;
 
+var tempUnitIndicator = "metric"; //* indicate which temperature unit is chosen for API URL. Values: metric/imperial
+
 function getCurrentWeather (place) {
 	let key = "e799217a4276d0646d61cfe92b79802b";
-	let url = `https://api.openweathermap.org/data/2.5/weather?q=${place}&appid=${key}&&units=metric`;
+	let url = `https://api.openweathermap.org/data/2.5/weather?q=${place}&appid=${key}&&units=${tempUnitIndicator}`;
 	axios.get(url).then((response) => {
 		let realFeel = document.querySelector(".realFeel");
 		realFeel.innerHTML = Math.round(response.data.main.feels_like);
@@ -158,7 +160,7 @@ function getCurrentWeather (place) {
 	}
 	var i, c = 0;
 	for (i = 0; i < 5 ; i++) {
-		let forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${place}&appid=${key}&&units=metric`;
+		let forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${place}&appid=${key}&&units=${tempUnitIndicator}`;
 		axios.get(forecastUrl).then(changeForecastedTempAndIcon.bind(null,i))
 	};
 	
@@ -169,7 +171,7 @@ function getCurrentWeather (place) {
 		myChart.destroy();
 	}
 	myChart = new Chart(ctx,config);
-	let forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${place}&appid=${key}&&units=metric`;
+	let forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${place}&appid=${key}&&units=${tempUnitIndicator}`;
 	axios.get(forecastUrl).then((response) => {
 		var i;
 		config.data.datasets[0].data.splice(0, config.data.datasets[0].data.length);
@@ -201,39 +203,42 @@ function changeValue (where,toBeValue) {
 		unit[i].innerHTML = `${toBeValue}`;
 	};
 };
+
 var clickFarenheit = document.querySelector('.farenheitConversion');
 clickFarenheit.addEventListener("click", function () {
 	var i;
 	if (this.innerHTML === '°F') {
 		this.innerHTML=this.innerHTML.replace("°F","°C");
+		tempUnitIndicator = "imperial";
 		changeValue(".celcius","°F");
 		changeValue(".celcius-big","°F");
 		convertDegree(".number","°F");
 		convertDegree(".number-big","°F");
-
+		
 		for (i = 0; i < 8; i++) {
 			config.data.datasets[0].data[i] = Math.round((config.data.datasets[0].data[i]* 9) / 5 + 32);
 			myChart.update();
 		}
 	} else {
 		this.innerHTML=this.innerHTML.replace("°C","°F");
+		tempUnitIndicator = "metric";
 		changeValue(".celcius","°C");
 		changeValue(".celcius-big","°C");
 		convertDegree(".number","°C");
 		convertDegree(".number-big","°C");
-
+		
 		for (i = 0; i < 8; i++) {
-			console.log(config.data.datasets[0].data);
 			config.data.datasets[0].data[i] = Math.round((config.data.datasets[0].data[i]- 32) * 5 / 9);
 			myChart.update();
     };
 	}});
+	
 
-function changeHeart2Icon (removedIcon,addedIcon) {
+function changeHeart2Icon (toBeRemovedIcon,toBeAddedIcon) {
 	const icon =document.querySelector('#heart2');
-	if (icon.classList.contains(removedIcon)) {
-		icon.classList.remove(removedIcon);
-		icon.classList.add(addedIcon);
+	if (icon.classList.contains(toBeRemovedIcon)) {
+		icon.classList.remove(toBeRemovedIcon);
+		icon.classList.add(toBeAddedIcon);
 	}
 }
 
@@ -333,7 +338,7 @@ function displayCurrentCity() {
 		var lat = response.coords.latitude;
 		var lon = response.coords.longitude;
 		let key = "e799217a4276d0646d61cfe92b79802b";
-		let url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${key}&units=metric`;
+		let url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${key}&units=${tempUnitIndicator}`;
 		axios.get(url).then((response) => {
 			let city = document.querySelector(".city");
 			city.innerHTML = `${response.data.name}`;
