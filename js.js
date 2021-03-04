@@ -9,42 +9,6 @@ function createNewFavCity (chosenCity) {
 	return li;
 }
 
-function convertDegree (where,indicator) {
-	var degree, i;
-	degree = document.querySelectorAll(where);
-	for(i=0; i<degree.length; i++) {
-		if (indicator === "°F") {
-			degree[i].innerHTML = Math.round((degree[i].innerHTML* 9) / 5 + 32);
-		} else {
-			degree[i].innerHTML = Math.round((degree[i].innerHTML - 32) * 5 / 9);
-		}
-	};
-}
-function changeValue (where,toBeValue) {
-	var unit, i;
-	unit = document.querySelectorAll(where);
-	for(i=0; i<unit.length; i++) {
-		unit[i].innerHTML = `${toBeValue}`;
-	};
-};
-var clickFarenheit = document.querySelector('.farenheitConversion');
-clickFarenheit.addEventListener("click", function () {
-	if (this.innerHTML === '°F') {
-		this.innerHTML=this.innerHTML.replace("°F","°C");
-		changeValue(".celcius","°F");
-		changeValue(".celcius-big","°F");
-		convertDegree(".number","°F");
-		convertDegree(".number-big","°F");
-	} else {
-		this.innerHTML=this.innerHTML.replace("°C","°F");
-		changeValue(".celcius","°C");
-		changeValue(".celcius-big","°C");
-		convertDegree(".number","°C");
-		convertDegree(".number-big","°C");
-    };
-}
-);
-
 function format_two_digits (n,b) {
 	/**
 	 * *b is indicator, 1: format for month, 0: format for minutes or hours or date
@@ -147,12 +111,19 @@ var config = {
 				},
 				ticks: {
 					display: false,
-					max: 40
+					max: 100
 				}
 			}],
-		}
-	},
-	};
+		},
+		plugins: {
+			datalabels: {
+				display: true,
+				align: 'top',
+				color: 'palevioletred'
+			}
+		},
+		tooltips: false
+	}};
 	
 var myChart;
 
@@ -178,28 +149,19 @@ function getCurrentWeather (place) {
 	}
 	);
 
-	function changeForecastedTemp (i,response) {
+	function changeForecastedTempAndIcon (i,response) {
+		let forecastedTemp = document.querySelectorAll(".forecast");
+		let forecastedIcon = document.querySelectorAll(".rowFutureIcon");
 		forecastedTemp[4-i].innerHTML = `${Math.round(response.data.list[39-c].main.temp)}`;
+		forecastedIcon[4-i].innerHTML = `<img src = "https://openweathermap.org/img/wn/${response.data.list[39-c].weather[0].icon}@2x.png">`;
 		c = c+8;
 	}
-	let forecastedTemp = document.querySelectorAll(".forecast");
 	var i, c = 0;
-	for (i = 0; i<forecastedTemp.length; i++) {
+	for (i = 0; i < 5 ; i++) {
 		let forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${place}&appid=${key}&&units=metric`;
-		axios.get(forecastUrl).then(changeForecastedTemp.bind(null,i))
+		axios.get(forecastUrl).then(changeForecastedTempAndIcon.bind(null,i))
 	};
 	
-	function changeForecastedIcon (i,response) {
-		forecastedIcon[4-i].innerHTML = `<img src = "https://openweathermap.org/img/wn/${response.data.list[39-d].weather[0].icon}@2x.png">`;
-		d = d+8;
-	}
-	let forecastedIcon = document.querySelectorAll(".rowFutureIcon");
-	var i, d = 0;
-	for (i = 0; i<forecastedIcon.length; i++) {
-		let forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${place}&appid=${key}&&units=metric`;
-		axios.get(forecastUrl).then(changeForecastedIcon.bind(null,i))
-	};
-
 	if (myChart) {
 		/** 
 		 ** to prevent the old data to reappear when mouse is hovered on data points
@@ -219,7 +181,53 @@ function getCurrentWeather (place) {
 		myChart.update();
 	});
 }
-getCurrentWeather("Tokyo");
+getCurrentWeather("London");
+
+function convertDegree (where,indicator) {
+	var degree, i;
+	degree = document.querySelectorAll(where);
+	for(i=0; i<degree.length; i++) {
+		if (indicator === "°F") {
+			degree[i].innerHTML = Math.round((degree[i].innerHTML* 9) / 5 + 32);
+		} else {
+			degree[i].innerHTML = Math.round((degree[i].innerHTML - 32) * 5 / 9);
+		}
+	};
+}
+function changeValue (where,toBeValue) {
+	var unit, i;
+	unit = document.querySelectorAll(where);
+	for(i=0; i<unit.length; i++) {
+		unit[i].innerHTML = `${toBeValue}`;
+	};
+};
+var clickFarenheit = document.querySelector('.farenheitConversion');
+clickFarenheit.addEventListener("click", function () {
+	var i;
+	if (this.innerHTML === '°F') {
+		this.innerHTML=this.innerHTML.replace("°F","°C");
+		changeValue(".celcius","°F");
+		changeValue(".celcius-big","°F");
+		convertDegree(".number","°F");
+		convertDegree(".number-big","°F");
+
+		for (i = 0; i < 8; i++) {
+			config.data.datasets[0].data[i] = Math.round((config.data.datasets[0].data[i]* 9) / 5 + 32);
+			myChart.update();
+		}
+	} else {
+		this.innerHTML=this.innerHTML.replace("°C","°F");
+		changeValue(".celcius","°C");
+		changeValue(".celcius-big","°C");
+		convertDegree(".number","°C");
+		convertDegree(".number-big","°C");
+
+		for (i = 0; i < 8; i++) {
+			console.log(config.data.datasets[0].data);
+			config.data.datasets[0].data[i] = Math.round((config.data.datasets[0].data[i]- 32) * 5 / 9);
+			myChart.update();
+    };
+	}});
 
 function changeHeart2Icon (removedIcon,addedIcon) {
 	const icon =document.querySelector('#heart2');
@@ -343,6 +351,5 @@ let searchCurrent = document.querySelector(".searchCurrent");
 searchCurrent.addEventListener("click", displayCurrentCity);
 
 /**
- * ? figures on top of chart points
- * ? push hourly forecast according to local timezone of serached place
+ * ? push hourly forecast according to local timezone of searched place
  */
