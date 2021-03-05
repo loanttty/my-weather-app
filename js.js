@@ -111,7 +111,7 @@ var config = {
 				},
 				ticks: {
 					display: false,
-					max: 100
+					max: 120
 				}
 			}],
 		},
@@ -130,6 +130,8 @@ var myChart;
 var tempUnitIndicator = "metric"; //* indicate which temperature unit is chosen for API URL. Values: metric/imperial
 
 function getCurrentWeather (place) {
+	var lon;
+	var lat;
 	let key = "e799217a4276d0646d61cfe92b79802b";
 	let url = `https://api.openweathermap.org/data/2.5/weather?q=${place}&appid=${key}&&units=${tempUnitIndicator}`;
 	axios.get(url).then((response) => {
@@ -148,21 +150,27 @@ function getCurrentWeather (place) {
 		let currentMin = document.querySelector(".currentMin");
 		currentMin.innerHTML = Math.round(response.data.main.temp_min);
 		convertTime(response.data.timezone); 
+
+		lat = response.data.coord.lat;
+		lon = response.data.coord.lon;
+	
+		function changeForecastedTempAndIcon (i,response) {
+			console.log(response);
+			let forecastedTemp = document.querySelectorAll(".rowFutureWeather");
+			let forecastedIcon = document.querySelectorAll(".rowFutureIcon");
+			forecastedTemp[i].innerHTML = `<span class="number forecast">${Math.round(response.data.daily[i+1].temp.max)}</span>
+											<span class="noCelcius">°</span>/
+											<span class="number forecast">${Math.round(response.data.daily[i+1].temp.min)}</span>
+											<span class="noCelcius">°</span>`
+			forecastedIcon[i].innerHTML = `<img src = "https://openweathermap.org/img/wn/${response.data.daily[i+1].weather[0].icon}@2x.png">`;
+		}
+		var i;
+		for (i = 0; i < 5 ; i++) {
+			let forecastUrl = `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=current,minutely&appid=${key}&units=${tempUnitIndicator}`;
+			axios.get(forecastUrl).then(changeForecastedTempAndIcon.bind(null,i))
+		};
 	}
 	);
-
-	function changeForecastedTempAndIcon (i,response) {
-		let forecastedTemp = document.querySelectorAll(".forecast");
-		let forecastedIcon = document.querySelectorAll(".rowFutureIcon");
-		forecastedTemp[4-i].innerHTML = `${Math.round(response.data.list[39-c].main.temp)}`;
-		forecastedIcon[4-i].innerHTML = `<img src = "https://openweathermap.org/img/wn/${response.data.list[39-c].weather[0].icon}@2x.png">`;
-		c = c+8;
-	}
-	var i, c = 0;
-	for (i = 0; i < 5 ; i++) {
-		let forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${place}&appid=${key}&&units=${tempUnitIndicator}`;
-		axios.get(forecastUrl).then(changeForecastedTempAndIcon.bind(null,i))
-	};
 	
 	if (myChart) {
 		/** 
@@ -171,7 +179,7 @@ function getCurrentWeather (place) {
 		myChart.destroy();
 	}
 	myChart = new Chart(ctx,config);
-	let forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${place}&appid=${key}&&units=${tempUnitIndicator}`;
+	let forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${place}&appid=${key}&cnt=40&units=${tempUnitIndicator}`;
 	axios.get(forecastUrl).then((response) => {
 		var i;
 		config.data.datasets[0].data.splice(0, config.data.datasets[0].data.length);

@@ -136,6 +136,7 @@ btn {
 
 .number,
 .celcius,
+.noCelcius,
 .windSpeed {
   padding: 0;
   width: fit-content;
