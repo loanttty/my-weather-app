@@ -135,6 +135,7 @@ function getCurrentWeather (place) {
 	let key = "e799217a4276d0646d61cfe92b79802b";
 	let url = `https://api.openweathermap.org/data/2.5/weather?q=${place}&appid=${key}&&units=${tempUnitIndicator}`;
 	axios.get(url).then((response) => {
+		console.log(response);
 		let realFeel = document.querySelector(".realFeel");
 		realFeel.innerHTML = Math.round(response.data.main.feels_like);
 		let windSpeed = document.querySelector(".windSpeed");
@@ -150,6 +151,19 @@ function getCurrentWeather (place) {
 		let currentMin = document.querySelector(".currentMin");
 		currentMin.innerHTML = Math.round(response.data.main.temp_min);
 		time(new Date(convertTime(response.data.dt*1000,response.data.timezone))); 
+
+		let cardBackground = document.querySelector(".card");
+		if (response.data.dt >= response.data.sys.sunrise && response.data.dt <= response.data.sys.sunset) {
+				if (cardBackground.classList.contains('background-Night')) {
+					cardBackground.classList.remove('background-Night');
+					cardBackground.classList.add('background-Day');
+				}
+			} else {
+				if (cardBackground.classList.contains('background-Day')) {
+					cardBackground.classList.remove('background-Day');
+					cardBackground.classList.add('background-Night');
+				}
+		}
 
 		lat = response.data.coord.lat;
 		lon = response.data.coord.lon;

@@ -2,7 +2,10 @@
   color: palevioletred;
   font-family: monospace;
 }
-.backGround {
+.background-Day {
+  background-image: linear-gradient(to bottom, #fbaccc, #f1d1d0, #f4f9f9);
+}
+.background-Night {
   background-image: linear-gradient(to bottom, #2c061f, #374045, #7d0633);
 }
 .row-5 {
