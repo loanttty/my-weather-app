@@ -16,6 +16,15 @@ function format_two_digits (n,b) {
 	return (n+b) < 10 ? '0' + (n+b) : (n+b);
 }
 
+function convertTime (dt,timezone) {
+	var d = new Date (dt);
+	var localTime = d.getTime();
+	var localOffset = d.getTimezoneOffset() * 60000;
+	var utc = localTime + localOffset;
+	var timeConverted = utc + timezone * 1000; //convert a UNIX timestamp to JS
+	return timeConverted;
+}
+
 function time (newDate) {
 	let date = newDate.getDate();
 	let hour = newDate.getHours();
@@ -25,7 +34,7 @@ function time (newDate) {
 	let days = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
 	let day = days[newDate.getDay()];
 	
-	let months = ["Jan",	"Feb",	"Mar",	"Apr",	"May",	"Jun",	"Jul",	"Aug",	"Sep",	"Oct",	"Nov",	"Dec"	];
+	let months = ["Jan", "Feb",	"Mar", "Apr", "May", "Jun",	"Jul", "Aug", "Sep", "Oct",	"Nov", "Dec"];
 	let month = months[newDate.getMonth()];
 	let dateDisplayed = document.querySelector(".rowDate");
 	dateDisplayed.innerHTML = `${day}, ${month} ${date} ${year} ${format_two_digits(hour,0)}:${format_two_digits(minute,0)}`;
@@ -49,15 +58,6 @@ function time (newDate) {
 		dateFuture[i].innerHTML = `${format_two_digits(dateTest.getDate(),0)}/${format_two_digits(dateTest.getMonth(),1)}`;
 	};
 };
-
-function convertTime (timezone) {
-	var d = new Date ();
-	var localTime = d.getTime();
-	var localOffset = d.getTimezoneOffset() * 60000;
-	var utc = localTime + localOffset;
-	var timeConverted = utc + timezone * 1000; //convert a UNIX timestamp to JS
-	time (new Date(timeConverted));
-}
 
 var ctx = document.getElementById('myChart');
 var config = {
@@ -149,13 +149,12 @@ function getCurrentWeather (place) {
 		currentMax.innerHTML = Math.round(response.data.main.temp_max);
 		let currentMin = document.querySelector(".currentMin");
 		currentMin.innerHTML = Math.round(response.data.main.temp_min);
-		convertTime(response.data.timezone); 
+		time(new Date(convertTime(response.data.dt*1000,response.data.timezone))); 
 
 		lat = response.data.coord.lat;
 		lon = response.data.coord.lon;
 	
 		function changeForecastedTempAndIcon (i,response) {
-			console.log(response);
 			let forecastedTemp = document.querySelectorAll(".rowFutureWeather");
 			let forecastedIcon = document.querySelectorAll(".rowFutureIcon");
 			forecastedTemp[i].innerHTML = `<span class="number forecast">${Math.round(response.data.daily[i+1].temp.max)}</span>
@@ -186,7 +185,13 @@ function getCurrentWeather (place) {
 		config.data.labels.splice(0, config.data.labels.length);
 		for (i = 0; i < 8; i++) {
 			config.data.datasets[0].data.push(Math.round(response.data.list[i].main.temp));
-			config.data.labels.push(response.data.list[i].dt_txt.substring(11,16));
+			
+			/**
+			 * *Convert epoch according to current time of searched place and push to labels of xAxis
+			 */
+			var timestamp = new Date(convertTime(response.data.list[i].dt*1000,response.data.city.timezone));
+
+			config.data.labels.push(`${format_two_digits(timestamp.getHours(),0)}:00`);
 		}
 		myChart.update();
 	});
@@ -362,7 +367,3 @@ function displayCurrentCity() {
 }
 let searchCurrent = document.querySelector(".searchCurrent");
 searchCurrent.addEventListener("click", displayCurrentCity);
-
-/**
- * ? push hourly forecast according to local timezone of searched place
- */
