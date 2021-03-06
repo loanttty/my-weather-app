@@ -3,7 +3,7 @@
   font-family: monospace;
 }
 .background-Day {
-  background-image: linear-gradient(to bottom, #fbaccc, #f1d1d0, #f4f9f9);
+  background-image: linear-gradient(to bottom, #fdffcd, #ffebbb, #ffcab0);
 }
 .background-Night {
   background-image: linear-gradient(to bottom, #2c061f, #374045, #7d0633);
@@ -125,7 +125,8 @@ btn {
 }
 
 .farenheitConversion:hover {
-  color: #ffcbcb;
+  color: #f03861;
+  font-weight: bolder;
 }
 .searchButton:hover,
 .searchCurrent:hover,
@@ -143,4 +144,8 @@ btn {
 .windSpeed {
   padding: 0;
   width: fit-content;
+}
+
+.tooltip .tooltip-inner {
+  animation: ease-in-out;
 }

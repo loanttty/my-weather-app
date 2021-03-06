@@ -3,16 +3,14 @@ function createNewFavCity (chosenCity) {
 	var a = document.createElement("a");
 	a.textContent = chosenCity;
 	a.className = 'dropdown-item';
-	chosenCity = chosenCity.replace(" ","-"); /**cater for city name with 2 or more words */
+	chosenCity = chosenCity.replace(" ","-"); //*cater for city name with 2 or more words */
 	li.className = chosenCity;
 	li.appendChild(a);
 	return li;
 }
 
 function format_two_digits (n,b) {
-	/**
-	 * *b is indicator, 1: format for month, 0: format for minutes or hours or date
-	 */
+	//*b is indicator, 1: format for month, 0: format for minutes or hours or date
 	return (n+b) < 10 ? '0' + (n+b) : (n+b);
 }
 
@@ -127,7 +125,8 @@ var config = {
 	
 var myChart;
 
-var tempUnitIndicator = "metric"; //* indicate which temperature unit is chosen for API URL. Values: metric/imperial
+//* indicate which temperature unit is chosen for API URL. Values: metric/imperial
+var tempUnitIndicator = "metric"; 
 
 function getCurrentWeather (place) {
 	var lon;
@@ -151,7 +150,10 @@ function getCurrentWeather (place) {
 		let currentMin = document.querySelector(".currentMin");
 		currentMin.innerHTML = Math.round(response.data.main.temp_min);
 		time(new Date(convertTime(response.data.dt*1000,response.data.timezone))); 
-
+		
+		/** 
+		 * *Change background color according to sunrise/sunset time
+		 */
 		let cardBackground = document.querySelector(".card");
 		if (response.data.dt >= response.data.sys.sunrise && response.data.dt <= response.data.sys.sunset) {
 				if (cardBackground.classList.contains('background-Night')) {
@@ -179,7 +181,7 @@ function getCurrentWeather (place) {
 		}
 		var i;
 		for (i = 0; i < 5 ; i++) {
-			let forecastUrl = `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=current,minutely&appid=${key}&units=${tempUnitIndicator}`;
+			let forecastUrl = `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=current,minutely,alert&appid=${key}&units=${tempUnitIndicator}`;
 			axios.get(forecastUrl).then(changeForecastedTempAndIcon.bind(null,i))
 		};
 	}
@@ -292,6 +294,7 @@ function search(event) {
 	let city = document.querySelector(".city");
 	
 	if (searchInput.value) {
+		//*tranform input to always capitalize the first letter of every word entered
 		var formattedCity = searchInput.value.trim().split(" ");
 		var i; 
 		for (i = 0; i < formattedCity.length; i++) {
@@ -305,9 +308,9 @@ function search(event) {
 		getCurrentWeather(formattedCity);
 
 		if (checkDupplicatedMarkedCity(formattedCity) === undefined) {
-			changeHeart2Icon('fas','far')
+			changeHeart2Icon('fas','far') //*cities not in Favorite list has empty-heart icon */
 		} else {
-			changeHeart2Icon('far','fas')
+			changeHeart2Icon('far','fas') //*cities in Favorite list has filled-heart icon */
 		};
 		
 	} else {
@@ -381,3 +384,11 @@ function displayCurrentCity() {
 }
 let searchCurrent = document.querySelector(".searchCurrent");
 searchCurrent.addEventListener("click", displayCurrentCity);
+
+//* [].slice.call() to convert array-like objects/collection to a new Array*/
+var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+
+//* .map() to create new Array populated with the result of calling a provided function on every element in the calling array */
+var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+  return new bootstrap.Tooltip(tooltipTriggerEl)
+})
