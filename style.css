@@ -141,7 +141,8 @@ btn {
 .number,
 .celcius,
 .noCelcius,
-.windSpeed {
+.windSpeed,
+.humidity {
   padding: 0;
   width: fit-content;
 }
