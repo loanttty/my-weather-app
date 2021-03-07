@@ -296,7 +296,7 @@ function search(event) {
 	
 	if (searchInput.value) {
 		//*tranform input to always capitalize the first letter of every word entered
-		var formattedCity = searchInput.value.trim().split(" ");
+		var formattedCity = searchInput.value.trim().toLowerCase().split(" ");
 		var i; 
 		for (i = 0; i < formattedCity.length; i++) {
 			var b = formattedCity[i];
