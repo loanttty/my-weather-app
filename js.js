@@ -57,6 +57,23 @@ function time (newDate) {
 	};
 };
 
+function checkDupplicatedMarkedCity (cityName) {
+	let dropDownItemList = document.querySelectorAll(".dropdown-item");
+	var faveCityList = Array.from(dropDownItemList);
+	var i; array = [];
+	for (i = 0; i < faveCityList.length; i++) {
+		array.push(faveCityList[i].innerHTML);
+	}
+	
+	for (i = 0; i < array.length; i++) {
+		if (cityName === array[i]) {
+			var existingCity = array[i];
+		}
+	}	
+
+	return existingCity; /** check if city input exists in drop-down list */
+}
+
 var ctx = document.getElementById('myChart');
 var config = {
 	type: 'line',
@@ -134,6 +151,15 @@ function getCurrentWeather (place) {
 	let key = "e799217a4276d0646d61cfe92b79802b";
 	let url = `https://api.openweathermap.org/data/2.5/weather?q=${place}&appid=${key}&&units=${tempUnitIndicator}`;
 	axios.get(url).then((response) => {
+		let cityName = document.querySelector(".city");
+		cityName.innerHTML = response.data.name;
+
+		if (checkDupplicatedMarkedCity(response.data.name) === undefined) {
+			changeHeart2Icon('fas','far') //*cities not in Favorite list has empty-heart icon */
+		} else {
+			changeHeart2Icon('far','fas') //*cities in Favorite list has filled-heart icon */
+		};
+		
 		let realFeel = document.querySelector(".realFeel");
 		realFeel.innerHTML = Math.round(response.data.main.feels_like);
 		let windSpeed = document.querySelector(".windSpeed");
@@ -272,30 +298,12 @@ function changeHeart2Icon (toBeRemovedIcon,toBeAddedIcon) {
 	}
 }
 
-function checkDupplicatedMarkedCity (cityName) {
-	let dropDownItemList = document.querySelectorAll(".dropdown-item");
-	var faveCityList = Array.from(dropDownItemList);
-	var i; array = [];
-	for (i = 0; i < faveCityList.length; i++) {
-		array.push(faveCityList[i].innerHTML);
-	}
-	
-	for (i = 0; i < array.length; i++) {
-		if (cityName === array[i]) {
-			var existingCity = array[i];
-		}
-	}	
-
-	return existingCity; /** check if city input exists in drop-down list */
-}
-
 function search(event) {
 	event.preventDefault();
 	let searchInput = document.querySelector("#enterCity");
-	let city = document.querySelector(".city");
 	
 	if (searchInput.value) {
-		//*tranform input to always capitalize the first letter of every word entered
+		/*//*tranform input to always capitalize the first letter of every word entered
 		var formattedCity = searchInput.value.trim().toLowerCase().split(" ");
 		var i; 
 		for (i = 0; i < formattedCity.length; i++) {
@@ -305,15 +313,9 @@ function search(event) {
 		}
 		formattedCity = formattedCity.join(" ");
 		city.innerHTML = `${formattedCity}`;
+		*/
+		getCurrentWeather(searchInput.value);
 
-		getCurrentWeather(formattedCity);
-
-		if (checkDupplicatedMarkedCity(formattedCity) === undefined) {
-			changeHeart2Icon('fas','far') //*cities not in Favorite list has empty-heart icon */
-		} else {
-			changeHeart2Icon('far','fas') //*cities in Favorite list has filled-heart icon */
-		};
-		
 	} else {
 		alert(`Please enter a city`);
 	}
@@ -345,19 +347,19 @@ var clickFavorite = document.querySelector(".rowPlace");
 clickFavorite.addEventListener("click", 
     function () {
 		var markedCity = this.querySelector(".city");
-        const icon =this.querySelector('i');
+		const icon =this.querySelector('i');
 		const menu = document.querySelector(".dropdown-menu");
-        if (icon.classList.contains('far')) {
-			icon.classList.remove('far');
-            icon.classList.add('fas');
-			menu.appendChild(createNewFavCity(markedCity.innerHTML));
-			selectDropDownItem(); //*search weather of newly marked city  */
-
-        } else {
+			if (icon.classList.contains('far')) {
+				icon.classList.remove('far');
+				icon.classList.add('fas');
+				menu.appendChild(createNewFavCity(markedCity.innerHTML));
+				selectDropDownItem(); //*search weather of newly marked city  */
+			} else {
 			icon.classList.remove('fas');
             icon.classList.add('far');
 			//* when a city is unmarked, it should be removed from the list */
 			var test = markedCity.innerHTML;
+			console.log(test);
 			test = test.replace(" ","-"); /**cater for city name with 2 or more words */
 			test = `.${test}`;
 			menu.removeChild(menu.querySelector(test));
