@@ -324,18 +324,10 @@ function search(event) {
 let form = document.querySelector("form, .searchButton");
 form.addEventListener("submit", search);
 
-function appendLikedCity (cityName) {
-	//event.preventDefault();
-	let city = document.querySelector(".city");
-	city.innerHTML = `${cityName}`;
-	changeHeart2Icon('far','fas');
-}
-
 function selectDropDownItem() {
 	let clickDropDownItem = document.querySelectorAll(".dropdown-item");
 	clickDropDownItem.forEach(function (clickItem) {
 		clickItem.addEventListener("click", () => {
-			appendLikedCity(clickItem.innerHTML);
 			getCurrentWeather(clickItem.innerHTML);
 		});
 	});
@@ -355,13 +347,14 @@ clickFavorite.addEventListener("click",
 				menu.appendChild(createNewFavCity(markedCity.innerHTML));
 				selectDropDownItem(); //*search weather of newly marked city  */
 			} else {
-			icon.classList.remove('fas');
-            icon.classList.add('far');
-			//* when a city is unmarked, it should be removed from the list */
-			var toBeRemovedCity = markedCity.innerHTML;
-			toBeRemovedCity = toBeRemovedCity.replace(" ","-"); /**cater for city name with 2 or more words */
-			toBeRemovedCity = `.${toBeRemovedCity}`;
-			menu.removeChild(menu.querySelector(toBeRemovedCity));
+				icon.classList.remove('fas');
+				icon.classList.add('far');
+				
+				//* when a city is unmarked, it should be removed from the list */
+				var toBeRemovedCity = markedCity.innerHTML;
+				toBeRemovedCity = toBeRemovedCity.replace(" ","-"); /**cater for city name with 2 or more words */
+				toBeRemovedCity = `.${toBeRemovedCity}`;
+				menu.removeChild(menu.querySelector(toBeRemovedCity));
         }
     });
 
@@ -372,15 +365,7 @@ function displayCurrentCity() {
 		let key = "e799217a4276d0646d61cfe92b79802b";
 		let url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${key}&units=${tempUnitIndicator}`;
 		axios.get(url).then((response) => {
-			let city = document.querySelector(".city");
-			city.innerHTML = `${response.data.name}`;
 			getCurrentWeather(response.data.name);
-
-			if (checkDupplicatedMarkedCity(response.data.name) === undefined) {
-			changeHeart2Icon('fas','far')
-			} else {
-			changeHeart2Icon('far','fas')
-			};
 		})
 	})
 }
