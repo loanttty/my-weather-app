@@ -358,11 +358,10 @@ clickFavorite.addEventListener("click",
 			icon.classList.remove('fas');
             icon.classList.add('far');
 			//* when a city is unmarked, it should be removed from the list */
-			var test = markedCity.innerHTML;
-			console.log(test);
-			test = test.replace(" ","-"); /**cater for city name with 2 or more words */
-			test = `.${test}`;
-			menu.removeChild(menu.querySelector(test));
+			var toBeRemovedCity = markedCity.innerHTML;
+			toBeRemovedCity = toBeRemovedCity.replace(" ","-"); /**cater for city name with 2 or more words */
+			toBeRemovedCity = `.${toBeRemovedCity}`;
+			menu.removeChild(menu.querySelector(toBeRemovedCity));
         }
     });
 
